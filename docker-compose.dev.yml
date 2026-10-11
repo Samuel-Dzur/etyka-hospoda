@@ -3,15 +3,21 @@ services:
     image: postgres:18.6
     container_name: hospoda-postgres
     environment:
-      POSTGRES_DB: application
       POSTGRES_USER: user
       POSTGRES_PASSWORD: password
     ports:
       - "5432:5432"
     volumes:
       - hospoda-data:/var/lib/postgresql/data
+      - ./init-database:/docker-entrypoint-initdb.d
     networks:
       - hospoda-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U user"]
+      interval: 15s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
   
   keycloak:
     image: quay.io/keycloak/keycloak:26.8.0
@@ -27,7 +33,35 @@ services:
     ports:
       - "8080:8080"
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
+    networks:
+      - hospoda-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health/ready"]
+      interval: 15s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+  backend:
+    image: eclipse-temurin:25-jdk-noble
+    command: ./gradlew bootRun --watch-files
+    container_name: hospoda-backend
+    working_dir: /app
+    volumes:
+      - ./backend:/app
+    ports:
+      - "8081:8081"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://hospoda-postgres:5432/application
+      SPRING_DATASOURCE_USERNAME: user
+      SPRING_DATASOURCE_PASSWORD: password
+    depends_on:
+      postgres:
+        condition: service_healthy
+      keycloak:
+        condition: service_healthy
     networks:
       - hospoda-network
 

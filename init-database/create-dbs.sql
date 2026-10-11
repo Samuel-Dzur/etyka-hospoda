@@ -1,0 +1,2 @@
+CREATE DATABASE application;
+CREATE DATABASE keycloak;
