@@ -8,7 +8,7 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - hospoda-data:/var/lib/postgresql/data
+      - hospoda-data:/var/lib/postgresql
       - ./init-database:/docker-entrypoint-initdb.d
     networks:
       - hospoda-network
@@ -28,8 +28,8 @@ services:
       KC_DB_URL: jdbc:postgresql://hospoda-postgres:5432/keycloak
       KC_DB_USERNAME: user
       KC_DB_PASSWORD: password
-      KEYCLOAK_ADMIN: admin
-      KEYCLOAK_ADMIN_PASSWORD: admin
+      KC_BOOTSTRAP_ADMIN_USERNAME: admin
+      KC_BOOTSTRAP_ADMIN_PASSWORD: admin
     ports:
       - "8080:8080"
     depends_on:
@@ -37,12 +37,6 @@ services:
         condition: service_healthy
     networks:
       - hospoda-network
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080/health/ready"]
-      interval: 15s
-      timeout: 10s
-      retries: 3
-      start_period: 30s
 
   backend:
     image: eclipse-temurin:25-jdk-noble
@@ -61,9 +55,28 @@ services:
       postgres:
         condition: service_healthy
       keycloak:
-        condition: service_healthy
+        condition: service_started
     networks:
       - hospoda-network
+  
+  frontend:
+    image: node:24-alpine
+    container_name: hospoda-frontend
+    working_dir: /app
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+      - PORT=3000
+      - NEXT_PUBLIC_API_URL=http://localhost:8081
+    networks:
+      - hospoda-network
+    depends_on:
+      backend:
+        condition: service_started
 
 volumes:
   hospoda-data:
