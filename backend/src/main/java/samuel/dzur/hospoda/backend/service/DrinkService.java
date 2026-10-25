@@ -1,7 +1,7 @@
 package samuel.dzur.hospoda.backend.service;
 
 import org.springframework.stereotype.Service;
-import samuel.dzur.hospoda.backend.dto.DrinkDto;
+import samuel.dzur.hospoda.backend.api.responses.DrinkResponse;
 import samuel.dzur.hospoda.backend.repository.DrinkRepository;
 
 import java.util.List;
@@ -16,9 +16,9 @@ public class DrinkService {
         this.drinkRepository = drinkRepository;
     }
 
-    public List<DrinkDto> getDrinkMenu() {
+    public List<DrinkResponse> getDrinkMenu() {
         return drinkRepository.findAll().stream()
-                .map(entity -> new DrinkDto(
+                .map(entity -> new DrinkResponse(
                         entity.getId(),
                         entity.getProductName(),
                         entity.getPrice(),

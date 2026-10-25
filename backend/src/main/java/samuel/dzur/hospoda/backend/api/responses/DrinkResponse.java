@@ -1,8 +1,8 @@
-package samuel.dzur.hospoda.backend.dto;
+package samuel.dzur.hospoda.backend.api.responses;
 
 import java.math.BigDecimal;
 
-public record DrinkDto(
+public record DrinkResponse(
     Long id,
     String productName,
     BigDecimal price,
