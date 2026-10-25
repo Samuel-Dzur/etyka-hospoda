@@ -6,8 +6,10 @@ import samuel.dzur.hospoda.backend.api.responses.OrderResponse;
 import samuel.dzur.hospoda.backend.api.responses.UserResponse;
 import samuel.dzur.hospoda.backend.api.responses.UserWithOrdersResponse;
 import samuel.dzur.hospoda.backend.repository.UserRepository;
+import samuel.dzur.hospoda.backend.repository.entity.OrderEntity;
 import samuel.dzur.hospoda.backend.repository.entity.UserEntity;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,38 +24,52 @@ public class UserService {
 
     @Transactional(readOnly = true)
     public List<UserResponse> getUsers() {
-        return userRepository.findAll().stream()
-                .map(this::toUserResponse)
-                .toList();
+        List<UserResponse> userResponses = userRepository.findAll().stream()
+            .map(this::toUserResponse)
+            .toList();
+
+        return userResponses;
     }
 
     @Transactional(readOnly = true)
     public Optional<UserWithOrdersResponse> getUserById(Long id) {
-        return userRepository.findById(id)
-                .map(user -> new UserWithOrdersResponse(
-                        user.getId(),
-                        user.getName(),
-                        user.getIsActive(),
-                        user.getIsAdult(),
-                        user.getPocket(),
-                        user.getOrders().stream()
-                                .map(order -> new OrderResponse(
-                                        order.getId(),
-                                        order.getProductName(),
-                                        order.getAmount(),
-                                        order.getPrice()
-                                ))
-                                .toList()
-                ));
+        return userRepository.findById(id).map(this::toUserWithOrdersResponse);
+    }
+
+    private UserWithOrdersResponse toUserWithOrdersResponse(UserEntity user) {
+        List<OrderResponse> orders = user.getOrders().stream()
+            .map(this::toOrderResponse)
+            .toList();
+
+        return new UserWithOrdersResponse(
+            user.getId(),
+            user.getName(),
+            user.getIsActive(),
+            user.getIsAdult(),
+            user.getPocket(),
+            orders
+        );
+    }
+
+    private OrderResponse toOrderResponse(OrderEntity order) {
+        BigDecimal totalPrice = order.getPriceRecord().getPrice()
+            .multiply(BigDecimal.valueOf(order.getAmount()));
+
+        return new OrderResponse(
+            order.getId(),
+            order.getPriceRecord().getDrink().getProductName(),
+            order.getAmount(),
+            totalPrice
+        );
     }
 
     private UserResponse toUserResponse(UserEntity user) {
         return new UserResponse(
-                user.getId(),
-                user.getName(),
-                user.getIsActive(),
-                user.getIsAdult(),
-                user.getPocket()
+            user.getId(),
+            user.getName(),
+            user.getIsActive(),
+            user.getIsAdult(),
+            user.getPocket()
         );
     }
 }

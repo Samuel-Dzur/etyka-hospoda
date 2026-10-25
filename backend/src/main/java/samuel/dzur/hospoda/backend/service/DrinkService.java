@@ -1,9 +1,13 @@
 package samuel.dzur.hospoda.backend.service;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import samuel.dzur.hospoda.backend.api.responses.DrinkResponse;
 import samuel.dzur.hospoda.backend.repository.DrinkRepository;
+import samuel.dzur.hospoda.backend.repository.entity.DrinkEntity;
+import samuel.dzur.hospoda.backend.repository.entity.PriceRecordEntity;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -16,14 +20,28 @@ public class DrinkService {
         this.drinkRepository = drinkRepository;
     }
 
+    @Transactional(readOnly = true)
     public List<DrinkResponse> getDrinkMenu() {
-        return drinkRepository.findAll().stream()
-                .map(entity -> new DrinkResponse(
-                        entity.getId(),
-                        entity.getProductName(),
-                        entity.getPrice(),
-                        entity.getIsForAdult()
-                ))
-                .collect(Collectors.toList());
+        List<DrinkResponse> drinkResponses = drinkRepository.findAll().stream()
+            .map(
+                entity -> new DrinkResponse(
+                    entity.getId(),
+                    entity.getProductName(),
+                    getCurrentPrice(entity),
+                    entity.getIsForAdult()
+                )
+            )
+            .collect(Collectors.toList());
+
+        return drinkResponses;
+    }
+
+    private BigDecimal getCurrentPrice(DrinkEntity drink) {
+        return drink.getPriceRecords().stream()
+                .findFirst()
+                .map(PriceRecordEntity::getPrice)
+                .orElseThrow(() -> new IllegalStateException(
+                        "Drink " + drink.getId() + " has no price records"
+                ));
     }
 }

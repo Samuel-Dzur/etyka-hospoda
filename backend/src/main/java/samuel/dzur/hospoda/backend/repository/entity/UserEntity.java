@@ -17,6 +17,9 @@ public class UserEntity {
     @Column(nullable = false)
     private String name;
 
+    @Column(name = "keycloak_id", nullable = false, unique = true)
+    private String keycloakId;
+
     @Column(nullable = false)
     private Boolean isActive;
 
@@ -36,6 +39,9 @@ public class UserEntity {
 
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
+
+    public String getKeycloakId() { return keycloakId; }
+    public void setKeycloakId(String keycloakId) { this.keycloakId = keycloakId; }
 
     public Boolean getIsActive() { return isActive; }
     public void setIsActive(Boolean isActive) { this.isActive = isActive; }
