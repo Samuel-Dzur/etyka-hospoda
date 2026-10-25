@@ -40,18 +40,18 @@ services:
 
   backend:
     image: eclipse-temurin:25-jdk-noble
-    command: sleep infinity #./gradlew bootRun --debug-jvm
+    command: bash ./gradlew bootRun
     container_name: hospoda-backend
     working_dir: /app
     volumes:
       - ./backend:/app
     ports:
-      - "8081:8081"
+      - "8081:8080"
       - "5005:5005" # Debug port
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://hospoda-postgres:5432/application
-      SPRING_DATASOURCE_USERNAME: user
-      SPRING_DATASOURCE_PASSWORD: password
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
     depends_on:
       postgres:
         condition: service_healthy
