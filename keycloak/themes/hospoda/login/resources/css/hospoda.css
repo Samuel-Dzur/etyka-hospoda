@@ -1,16 +1,11 @@
-body {
-  padding-bottom: 4.5rem;
-}
-
 .hospoda-back-link {
   position: fixed;
   z-index: 10;
   display: inline-flex;
   align-items: center;
   gap: 0.45rem;
-  bottom: 1.5rem;
-  left: 50%;
-  transform: translateX(-50%);
+  top: 1.5rem;
+  left: 1.5rem;
   color: #fff;
   font-size: 0.95rem;
   text-decoration: none;
