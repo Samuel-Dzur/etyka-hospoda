@@ -42,16 +42,19 @@ services:
 
   backend:
     image: eclipse-temurin:25-jdk-noble
+    user: "${LOCAL_UID:-1000}:${LOCAL_GID:-1000}"
     command: bash ./gradlew bootRun
     container_name: hospoda-backend
     working_dir: /app
     volumes:
       - ./backend:/app
+      - ./backend/storage:/app/storage
     ports:
       - "8081:8080"
       - "5005:5005" # Debug port
     environment:
       SPRING_PROFILES_ACTIVE: dev
+      APP_STORAGE_ROOT: /app/storage
       SPRING_DATASOURCE_URL: jdbc:postgresql://hospoda-postgres:5432/application
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: postgres

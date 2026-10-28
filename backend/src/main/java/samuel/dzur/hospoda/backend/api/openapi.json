@@ -156,6 +156,38 @@
         }
       }
     },
+    "/image/{id}": {
+      "get": {
+        "tags": [
+          "drink-controller"
+        ],
+        "operationId": "getDrinkImage",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "image/webp": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/drink-menu": {
       "get": {
         "tags": [
