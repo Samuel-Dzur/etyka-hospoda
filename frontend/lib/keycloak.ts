@@ -47,6 +47,11 @@ export function initializeKeycloak(): Promise<boolean> {
   return initialization;
 }
 
+export function getKeycloakUsername(): string | null {
+  const username = requireKeycloak().tokenParsed?.preferred_username;
+  return typeof username === "string" && username.length > 0 ? username : null;
+}
+
 export async function loginWithKeycloak(redirectUri: string): Promise<void> {
   await requireKeycloak().login({ redirectUri });
 }

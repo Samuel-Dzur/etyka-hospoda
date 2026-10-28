@@ -4,8 +4,8 @@ import Image from "next/image";
 import { ExternalLink } from "lucide-react";
 import { useState } from "react";
 import { useAuth } from "@/app/auth-provider";
-import PrimaryButton from "@/app/components/primary-button";
-import feedbackStyles from "@/app/components/feedback.module.css";
+import ErrorMessage from "@/components/error-message";
+import PrimaryButton from "@/components/primary-button";
 import styles from "./login.module.css";
 
 export default function LoginPage() {
@@ -80,9 +80,9 @@ export default function LoginPage() {
           </p>
 
           {(configurationError || loginError) && (
-            <p className={feedbackStyles.error} role="alert">
+            <ErrorMessage>
               {configurationError ?? loginError}
-            </p>
+            </ErrorMessage>
           )}
 
           <div className={styles.separator}>BEZPEČNÉ PŘIHLÁŠENÍ</div>

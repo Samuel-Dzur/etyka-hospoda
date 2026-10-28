@@ -1,0 +1,97 @@
+.accountInfo {
+  position: absolute;
+  top: 32px;
+  right: 48px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  max-width: calc(100% - 48px);
+}
+
+.accountItem {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  color: var(--ink);
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.accountItem span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.accountItem svg {
+  flex: 0 0 auto;
+}
+
+.profile {
+  position: relative;
+}
+
+.profileTrigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  max-width: min(240px, 45vw);
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--ink);
+  cursor: pointer;
+  font: inherit;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.profileTrigger span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.profileTrigger svg {
+  flex: 0 0 auto;
+}
+
+.profileTrigger:focus-visible,
+.profileMenuItem:focus-visible {
+  outline: 3px solid var(--gold);
+  outline-offset: 3px;
+}
+
+.profileMenu {
+  position: absolute;
+  z-index: 20;
+  top: calc(100% + 10px);
+  right: 0;
+  min-width: 200px;
+  padding: 8px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: 0 12px 32px rgb(24 34 28 / 14%);
+}
+
+.profileMenuItem {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border: 0;
+  border-radius: 5px;
+  background: transparent;
+  color: var(--ink);
+  cursor: pointer;
+  font: inherit;
+  font-size: 16px;
+  text-align: left;
+}
+
+.profileMenuItem:hover {
+  background: var(--paper);
+}

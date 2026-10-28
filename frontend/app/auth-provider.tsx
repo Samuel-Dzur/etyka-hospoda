@@ -11,6 +11,7 @@ import {
   type ReactNode,
 } from "react";
 import {
+  getKeycloakUsername,
   initializeKeycloak,
   loginWithKeycloak,
   logoutFromKeycloak,
@@ -26,6 +27,7 @@ interface AuthContextValue {
   logout: () => Promise<void>;
   register: (returnTo: string | null) => Promise<void>;
   status: AuthStatus;
+  username: string | null;
 }
 
 const loginPath = "/login";
@@ -64,6 +66,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const router = useRouter();
   const [status, setStatus] = useState<AuthStatus>("loading");
   const [error, setError] = useState<string | null>(null);
+  const [username, setUsername] = useState<string | null>(null);
 
   useEffect(() => {
     let mounted = true;
@@ -71,6 +74,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     initializeKeycloak()
       .then((authenticated) => {
         if (mounted) {
+          setUsername(authenticated ? getKeycloakUsername() : null);
           setStatus(authenticated ? "authenticated" : "unauthenticated");
         }
       })
@@ -114,8 +118,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const value = useMemo(
-    () => ({ error, login, logout, register, status }),
-    [error, login, logout, register, status],
+    () => ({ error, login, logout, register, status, username }),
+    [error, login, logout, register, status, username],
   );
 
   if (pathname !== loginPath && status !== "authenticated") {
