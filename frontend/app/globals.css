@@ -1,1 +1,28 @@
 @import "tailwindcss";
+
+:root {
+  color-scheme: light;
+  --ink: #18221c;
+  --muted: #69756b;
+  --paper: #f6f5ef;
+  --green: #244d3a;
+  --green-dark: #1b3b2c;
+  --gold: #e2b85a;
+  --line: #e4e5dc;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+button,
+a {
+  font: inherit;
+}
